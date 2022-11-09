@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -23,13 +23,32 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         const foodsCollection = client.db("foodsService").collection("foods")
+        const reviewCollection = client.db("foodsService").collection("review")
         app.get('/foods', async(req,res)=>{
             const query = {}
             const cursor = foodsCollection.find(query)
             const foods = await cursor.toArray();
             res.send(foods)
-
         })
+        app.get('/foods/:id', async (req, res) => {
+          const id = req.params.id;
+          const query = { _id: ObjectId(id) };
+          const food = await foodsCollection.findOne(query);
+          res.send(food);
+      });
+      app.post("/review", async (req, res) => {
+        const review = req.body;
+         await reviewCollection.insertOne(review);
+        
+        res.status(200).send("review added succesfully");
+        // console.log(result);
+      });
+      app.get("/review", async (req, res) => {
+        const query = {}
+        const review = await reviewCollection.find(query).toArray();
+      res.status(200).send(review);
+         
+      });
     }
     finally{
 
