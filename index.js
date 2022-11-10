@@ -2,11 +2,11 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 
 const port = process.env.PORT || 5000;
 
-//fooduser11
-//QlPyjswRfRjExvly
+
 
 // middle wares
 app.use(cors());
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 })
 
 
-const uri = "mongodb+srv://fooduser11:QlPyjswRfRjExvly@cluster0.hjwsdej.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.hjwsdej.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
@@ -39,6 +39,11 @@ async function run() {
     app.post('/review', async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+    app.post('/foods', async (req, res) => {
+      const foods = req.body;
+      const result = await foodsCollection.insertOne(foods);
       res.send(result);
     });
     app.get("/review", async (req, res) => {
