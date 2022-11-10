@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('food server is running!')
+  res.send('food server colte ce is running!')
 })
 
 
